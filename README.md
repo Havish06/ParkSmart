@@ -137,6 +137,17 @@ python -m pytest --selenium --browser chrome -q --html=reports/selenium-report.h
 
 Run visible browser tests with `--headed`. Use `--browser edge` for Microsoft Edge. Full test-layer details and TC01–TC18 traceability live in [`docs/TESTING.md`](docs/TESTING.md).
 
+### How ParkSmart Differs from Existing Parking Management Systems
+
+ParkSmart is designed as an integrated, web-based smart parking management platform that combines IoT-based slot monitoring with reservation management, QR-based admission, parking-session tracking, billing, receipt generation, and administrative controls.
+
+Its key practical differentiator is the combination of **ESP32 hardware integration and a built-in hardware-free simulation mode**. This allows the application to demonstrate parking workflows without requiring physical hardware during every development or testing session.
+
+Unlike a basic parking availability dashboard, ParkSmart aims to manage the broader parking lifecycle, from driver registration and slot allocation to admission, session tracking, fee calculation, and receipt generation. It also provides administrative tools for monitoring parking operations.
+
+The project is intended as a modular academic prototype that can be extended with real payment-gateway integration, more advanced analytics, and additional parking infrastructure as future enhancements.
+
+
 ## Production note
 
 The payment button is explicitly a simulated academic payment module and generates `SIM-...` transaction IDs. SMTP email is optional: when configured, reservation confirmation and completed-session receipts are sent; without it, notifications remain in the database and the PDF is still downloadable. Before real deployment, change the seeded credentials, set a strong `SECRET_KEY`, use PostgreSQL or another production database, serve the app over HTTPS with a production WSGI server, and replace simulated payments and email with real providers.
