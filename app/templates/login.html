@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Sign in · ParkSmart{% endblock %}
+{% block content %}
+<div class="auth"><div class="text-center mb-4"><span class="icon-box blue mb-3">👋</span><h1 class="h3">Welcome back</h1><p class="text-secondary mb-0">Sign in to manage your parking visits.</p></div><form method="post"><input type="hidden" name="next" value="{{ next }}"><label class="form-label">Email address</label><input class="form-control mb-3" name="email" type="email" autocomplete="email" required><label class="form-label">Password</label><input class="form-control mb-3" name="password" type="password" autocomplete="current-password" required><button class="btn btn-primary w-100">Sign in <span aria-hidden="true">→</span></button></form><div class="demo-box mt-4"><strong>Local demo access</strong><br><span class="text-secondary">Driver:</span> driver@parksmart.local / Driver@123<br><span class="text-secondary">Admin:</span> admin@parksmart.local / Admin@123</div><p class="mt-4 mb-0 text-center text-secondary">New to ParkSmart? <a href="{{ url_for('main.register') }}">Create an account</a></p></div>
+<p class="text-center"><a href="{{ url_for('main.forgot_password') }}">Forgot your password?</a></p>
+{% endblock %}

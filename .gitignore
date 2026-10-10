@@ -1,0 +1,12 @@
+.venv/
+.env
+__pycache__/
+**/__pycache__/
+.pytest_cache/
+.coverage
+.coverage.*
+instance/*.db
+reports/coverage/
+reports/downloads/
+reports/screenshots/
+reports/selenium-report*.html

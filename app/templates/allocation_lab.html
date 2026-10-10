@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+{% block title %}Allocation Lab · ParkSmart{% endblock %}
+{% block content %}
+<div class="page-heading">
+  <div><span class="eyebrow">Engineering workspace</span><h1>Allocation lab</h1><p>Replay the same workload against two parking policies and inspect every decision.</p></div>
+  <a class="btn btn-light" href="{{ url_for('main.admin') }}">Back to operations</a>
+</div>
+<div class="card panel-card p-4 mb-4">
+  <form class="row g-3 align-items-end" method="get">
+    <div class="col-md-4"><label class="form-label" for="scenario">Workload</label><select class="form-select" id="scenario" name="scenario"><option value="fragmentation" {% if experiment.scenario == 'fragmentation' %}selected{% endif %}>Fragmentation teaching case</option><option value="random" {% if experiment.scenario == 'random' %}selected{% endif %}>Seeded random workload</option></select></div>
+    <div class="col-md-2"><label class="form-label" for="seed">Seed</label><input class="form-control" id="seed" name="seed" type="number" value="{{ experiment.seed }}" min="0" max="2147483647"></div>
+    <div class="col-md-2"><label class="form-label" for="slots">Slots</label><input class="form-control" id="slots" name="slots" type="number" value="{{ experiment.slot_count }}" min="2" max="16"></div>
+    <div class="col-md-2"><label class="form-label" for="requests">Requests</label><input class="form-control" id="requests" name="requests" type="number" value="{{ experiment.request_count }}" min="2" max="500"></div>
+    <div class="col-md-2 d-flex gap-2"><button class="btn btn-primary flex-grow-1">Replay</button><a class="btn btn-outline-secondary" title="Download trace as CSV" href="{{ url_for('main.allocation_lab', scenario=experiment.scenario, seed=experiment.seed, slots=experiment.slot_count, requests=experiment.request_count, format='csv') }}">CSV</a></div>
+  </form>
+</div>
+<div class="alert alert-primary border-0"><strong>Method:</strong> First-fit chooses the lowest-numbered slot. Best-fit chooses the smallest free gap that can contain the visit, preserving large gaps for longer stays. Every run is deterministic for the same seed.</div>
+<div class="row g-4 mb-4">
+  {% for key, result in experiment.results.items() %}
+  <div class="col-md-6"><div class="card p-4 h-100 {% if key == 'best_fit' %}border-primary{% endif %}"><div class="d-flex justify-content-between align-items-start"><div><span class="eyebrow">{{ 'Reference policy' if key == 'first_fit' else 'ParkSmart policy' }}</span><h2 class="h4">{{ 'First-fit' if key == 'first_fit' else 'Best-fit gap packing' }}</h2></div><span class="badge text-bg-{{ 'secondary' if key == 'first_fit' else 'primary' }}">{{ result.acceptance_rate }}% accepted</span></div><div class="row g-3 mt-1"><div class="col-4"><small class="text-muted d-block">Accepted</small><strong class="h3">{{ result.accepted }}</strong></div><div class="col-4"><small class="text-muted d-block">Rejected</small><strong class="h3">{{ result.rejected }}</strong></div><div class="col-4"><small class="text-muted d-block">Utilization</small><strong class="h3">{{ result.added_utilization }}%</strong></div></div></div></div>
+  {% endfor %}
+</div>
+<div class="card panel-card p-4"><div class="section-heading"><div><h2 class="h5 mb-1">Decision trace</h2><small>Each request is replayed in order. Time is minutes from opening.</small></div><span class="icon-box purple">🧪</span></div><div class="table-responsive"><table class="table align-middle"><thead><tr><th>Request</th><th>Window</th><th>First-fit</th><th>Best-fit</th></tr></thead><tbody>{% for index in range(experiment.request_count) %}<tr><td>#{{ index + 1 }}</td><td>{{ experiment.results.first_fit.trace[index].start }}–{{ experiment.results.first_fit.trace[index].end }} min</td>{% for key in ['first_fit', 'best_fit'] %}<td><span class="badge text-bg-{{ 'success' if experiment.results[key].trace[index].slot else 'danger' }}">{{ experiment.results[key].trace[index].slot or 'REJECTED' }}</span>{% if experiment.results[key].trace[index].gap_minutes is not none %}<small class="text-muted ms-2">gap {{ experiment.results[key].trace[index].gap_minutes }}m</small>{% endif %}</td>{% endfor %}</tr>{% endfor %}</tbody></table></div></div>
+{% endblock %}

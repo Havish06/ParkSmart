@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block title %}ParkSmart · Smart parking{% endblock %}
+{% block content %}
+<section class="hero mb-4">
+  <div class="row align-items-center g-4 position-relative">
+    <div class="col-lg-8">
+      <span class="eyebrow">IoT parking management</span>
+      <h1>Smart parking. Simple. Automatic.</h1>
+      <p class="lead mt-3">Know what is available, reserve before you arrive, and leave with a clear digital receipt. ParkSmart keeps every step visible.</p>
+      <div class="d-flex flex-wrap gap-2 mt-4"><a class="btn btn-primary btn-lg" href="{{ url_for('main.register') }}">Start parking <span aria-hidden="true">→</span></a><a class="btn btn-outline-light btn-lg" href="{{ url_for('main.login') }}">Sign in</a></div>
+      <div class="hero-trust"><span>✓ Live slot status</span><span>✓ QR admission</span><span>✓ Digital billing</span></div>
+    </div>
+    <div class="col-lg-4 d-none d-lg-block"><div class="hero-diagram"><div>ESP32 + IR sensors</div><span>↓</span><div>ParkSmart dashboard</div><span>↓</span><div>Gate · Bill · Receipt</div></div></div>
+  </div>
+</section>
+<div class="section-heading"><div><span class="eyebrow mb-1">Everything in one place</span><h2 class="h4 mb-0">A smoother parking journey</h2></div></div>
+<div class="row g-3 mb-4">
+  <div class="col-md-4"><div class="card feature-card h-100 p-4"><div class="feature-icon">📡</div><h4>See availability</h4><p class="text-secondary mb-0">Live sensor updates make it easy to understand which spaces are ready before you enter.</p></div></div>
+  <div class="col-md-4"><div class="card feature-card h-100 p-4"><div class="feature-icon">📅</div><h4>Reserve with confidence</h4><p class="text-secondary mb-0">Choose a time window, receive a QR token, and keep your arrival details in one place.</p></div></div>
+  <div class="col-md-4"><div class="card feature-card h-100 p-4"><div class="feature-icon">🧾</div><h4>Finish digitally</h4><p class="text-secondary mb-0">Sensor-confirmed exit calculates the fee and makes a PDF receipt ready to download or email.</p></div></div>
+</div>
+<section class="card p-4 p-lg-5"><div class="row align-items-center g-4"><div class="col-lg-7"><span class="eyebrow">How it works</span><h2 class="h3">From arrival to receipt in three clear steps</h2></div><div class="col-lg-5"><div class="d-grid gap-3"><div class="quick-action"><span class="icon-box blue">1</span><span><strong>Choose a space</strong><small>Reserve or use walk-in entry.</small></span></div><div class="quick-action"><span class="icon-box green">2</span><span><strong>Park safely</strong><small>The sensor confirms your session.</small></span></div><div class="quick-action"><span class="icon-box amber">3</span><span><strong>Pay and go</strong><small>Get a transparent digital receipt.</small></span></div></div></div></div></section>
+{% endblock %}

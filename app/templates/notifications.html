@@ -1,0 +1,6 @@
+{% extends 'base.html' %}
+{% block title %}Notifications · ParkSmart{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">Activity center</span><h1>Notifications</h1><p>Updates about reservations, entry, billing, and payments.</p></div><a class="btn btn-light" href="{{ url_for('main.dashboard') }}">Back to overview</a></div>
+<div class="card p-4">{% for item in notifications %}<div class="list-row"><div class="d-flex gap-3 align-items-start"><span class="icon-box {{ 'green' if item.type in ['payment','entry'] else 'blue' }}">{{ '✓' if item.type == 'payment' else '•' }}</span><span>{{ item.message }}<br><small>{{ item.created_at.strftime('%d %b %Y · %H:%M') }}</small></span></div><span class="badge status-{{ item.type }}">{{ item.type }}</span></div>{% else %}<div class="empty-state"><div class="empty-icon">🔔</div><p class="mb-0">No notifications yet.</p></div>{% endfor %}</div>
+{% endblock %}
