@@ -1,0 +1,101 @@
+# ParkSmart functional testing
+
+## Purpose
+
+Functional testing verifies that ParkSmart performs the operations required by
+its specification. It checks the relationship between an input or user action
+and the expected observable result.
+
+Examples:
+
+- A valid driver can register and log in.
+- A valid reservation is created for an available slot.
+- An overlapping reservation is rejected.
+- Entry and exit sensor events create and close a parking session.
+- Billing, simulated payment, PDF receipts, and authorization behave correctly.
+
+Functional testing asks:
+
+> Does the feature work correctly?
+
+This is separate from non-functional testing, which asks how fast, secure,
+reliable, usable, or compatible the feature is. The non-functional cases are
+documented in [`NON_FUNCTIONAL_TESTING.md`](NON_FUNCTIONAL_TESTING.md).
+
+## Functional test layers
+
+| Layer | Tool | Scope |
+| --- | --- | --- |
+| Unit | pytest | Fee rules, duration calculations, serial payload parsing, and other isolated rules |
+| Integration | pytest and Flask test client | Routes, database persistence, reservations, sessions, payments, PDF generation, email fallback, and authorization |
+| Browser end-to-end | Selenium with Chrome or Edge | Registration, login, reservations, QR admission, simulator sensors, billing, payment, PDF download, and admin controls |
+
+## Functional test cases
+
+| ID | Scenario | Main expected result | Automated layer |
+| --- | --- | --- | --- |
+| **TC01** | Registration | A new driver account is created with valid details; invalid or duplicate details are rejected. | Selenium + pytest |
+| **TC02** | Valid login | A registered driver or administrator is authenticated and sent to the correct dashboard. | Selenium + pytest |
+| **TC03** | Invalid login | Incorrect credentials do not authenticate the user and produce an error message. | Selenium |
+| **TC04** | Live slot monitoring | The dashboard displays the current slot state and updates after a sensor transition. | Selenium + pytest |
+| **TC05** | Reservation | A driver can create a valid reservation and receives its confirmation and QR token. | Selenium + pytest |
+| **TC06** | Duplicate or overlapping reservation rejection | A conflicting reservation is rejected and the existing reservation remains unchanged. | Selenium + pytest |
+| **TC07** | Slot allocation | The system selects an available slot according to the configured allocation rules. | Selenium + pytest |
+| **TC08** | Vehicle entry | A valid QR admission creates an entry workflow and the allocated slot awaits sensor confirmation. | Selenium + pytest |
+| **TC09** | Vehicle exit | A free sensor transition closes the active session and makes the slot available again. | Selenium + pytest |
+| **TC10** | Duration calculation | The session duration is calculated correctly from entry and exit timestamps. | pytest |
+| **TC11** | Fee calculation | The bill uses the configured first-hour and additional-hour rates correctly. | pytest |
+| **TC12** | Bill generation | A completed parking session produces the expected unpaid bill and receipt data. | Selenium + pytest |
+| **TC13** | Simulated payment | A valid payment action marks the bill as paid and creates a simulated transaction ID. | Selenium + pytest |
+| **TC14** | PDF receipt | A paid session produces a downloadable, valid PDF receipt. | Selenium + pytest |
+| **TC15** | Admin authorization | Only an administrator can use admin controls, analytics, and simulator actions. | Selenium + pytest |
+| **TC16** | Parking full | When no usable slot is available, a new walk-in or reservation request is rejected with a clear message. | Selenium + pytest |
+| **TC17** | Database persistence | Users, reservations, sessions, payments, and notifications can be read back correctly after persistence. | pytest |
+| **TC18** | ESP32 malformed or disconnected state | Invalid hardware data is rejected safely and a disconnected or stale device is identified. | pytest |
+
+## Functional test commands
+
+Install the project dependencies and run the non-browser functional tests:
+
+```powershell
+python -m pytest -q
+```
+
+Run the Selenium functional tests in headless Chrome:
+
+```powershell
+python -m pytest --selenium --browser chrome -q --html=reports/selenium-report.html --self-contained-html
+```
+
+Run visible browser tests or use Edge when required:
+
+```powershell
+python -m pytest --selenium --headed --browser chrome -q
+python -m pytest --selenium --browser edge -q
+```
+
+Generate Python coverage for the functional suite:
+
+```powershell
+coverage run -m pytest -q
+coverage report -m
+coverage html
+```
+
+Selenium Manager downloads matching browser drivers. Chrome or Edge must be
+installed locally. Browser tests use isolated SQLite databases, simulator
+sensor controls, simulated payment, and no SMTP server.
+
+## Functional evidence
+
+Record the following for each functional test run:
+
+- Test ID and execution date
+- Application version or Git commit
+- Test data and environment
+- Actual result and pass/fail status
+- Failure details, if applicable
+- Screenshot, HTML report, PDF, or log evidence where relevant
+
+Selenium screenshots are stored under `reports/screenshots/` when the browser
+tests are run. HTML test results are stored under `reports/`.
