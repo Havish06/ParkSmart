@@ -3,7 +3,7 @@
 #include <ArduinoJson.h>
 
 // ParkSmart hardware contract
-const int IR_PINS[4] = { 32, 33, 25, 26 };
+const int IR_PINS[4] = { 23, 22, 21, 19 };
 const int SERVO_PIN = 27;
 const bool OCCUPIED_LOW = true;
 Servo gate;
